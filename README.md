@@ -1,12 +1,14 @@
 # Dataset for "Sustained transtension drives narrow, alternating basins and kinematic transition in the Upper Rhine Graben"
 
-This is a repository of the ASPECT input parameter files, shared libraries for stress analyses.
+This is a repository of the ASPECT input files, shared libraries for stress regime analysis.
 
-## ASPECT Inputs
+## Programable Filters
 
-## ASPECT Shared Libraries
+The ParaView Programable Filters for calculating the crustal strengthing factor ($\beta$) are stored in [filters/](https://github.com/alanjyu/rhine_transtension/tree/main/filters). 
 
-The source code for stress analyses is available in [plugins/](https://github.com/alanjyu/rhine_transtension/tree/main/plugins). This outputs the fault category and stress regime ratio for each cell.
+## Shared Libraries
+
+The source code for stress regime analysis is available in [lib/](https://github.com/alanjyu/rhine_transtension/tree/main/lib). This outputs the fault category and stress regime ratio for each cell.
 
 To install this library:
 
@@ -14,7 +16,7 @@ To install this library:
 
 2. Create a build directory within, then run `cmake -DAspect_DIR=/path/to/aspect/build/dir -DDEAL_II_DIR=/path/to/dealii/build/dir ..` to configure the build.
 
-3. Once the CMake files are generated, run `make -j4` to compile the source code. If successful, two `.so` files (`release` and `debug`) will be generated in the build directory.
+3. Once the CMake files are generated, run `make` to compile the source code. If successful, two `.so` files (`release` and `debug`) will be generated in the build directory.
 
 To include the library in a model run:
 
