@@ -2,6 +2,15 @@
 
 This repository contains ASPECT input files, programmable filters for crustal stretching factors, and ASPECT shared libraries for stress regime analysis.
 
+
+## Tested environment
+
+- [ParaView](https://www.paraview.org/) 6.0
+- [Python](https://www.python.org/) 3.12
+- [ASPECT](https://aspect.geodynamics.org/) 3.1.0-pre
+- [Fastscape](https://fastscape.org/fastscapelib-fortran/) (Fortran)
+
+
 ## Input files for the reference model
 
 The ASPECT input file (including Fastscape parameters), as well as its output log, is stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref).
@@ -39,10 +48,3 @@ To include the library in a model run:
 1. Add `set Additional shared libraries = /path/to/libregime_stress_ratio.release.so` to the preambles in the input `.prm`.
 
 2. For debug runs, use `/path/to/libregime_stress_ratio.debug.so` instead.
-
-## Tested environment
-
-- [ParaView](https://www.paraview.org/) 6.0
-- [Python](https://www.python.org/) 3.12
-- [ASPECT](https://aspect.geodynamics.org/) 3.1.0-pre
-- [Fastscape](https://fastscape.org/fastscapelib-fortran/) (Fortran)
