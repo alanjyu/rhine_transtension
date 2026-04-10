@@ -3,7 +3,7 @@
 This repository contains ASPECT input files, programmable filters for crustal stretching factors, and ASPECT shared libraries for stress regime analysis.
 
 
-## Tested environment
+## Tested Environment
 
 - [ParaView](https://www.paraview.org/) 6.0
 - [Python](https://www.python.org/) 3.12
@@ -11,7 +11,7 @@ This repository contains ASPECT input files, programmable filters for crustal st
 - [Fastscape](https://fastscape.org/fastscapelib-fortran/) (Fortran)
 
 
-## Input files for the reference model
+## Reference Model Input Files
 
 The ASPECT input file (including Fastscape parameters), as well as its output log, is stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref).
 
