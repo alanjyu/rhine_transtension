@@ -1,4 +1,4 @@
-# Dataset for "Sustained transtension drives narrow, alternating basins and kinematic transition in the Upper Rhine Graben"
+# Dataset for "Sustained transtension shapes narrow, alternating basins and kinematic transition in the Upper Rhine Graben"
 
 This is a repository of the ASPECT input files, shared libraries for stress regime analysis.
 
