@@ -1,0 +1,480 @@
+# ASPECT 3.1.0-pre with Fastscape
+# ref: reference model
+
+set Dimension = 3
+set Start time = 0
+set End time = 15e6
+set Use years in output instead of seconds = true
+set Nonlinear solver scheme = single Advection, iterated Stokes
+set Nonlinear solver tolerance = 5e-5
+set Max nonlinear iterations in pre-refinement = 0
+set Max nonlinear iterations = 50
+set CFL number = 0.5
+set Maximum time step = 1e5
+set Output directory = ref
+set Adiabatic surface temperature = 1573.25
+set Pressure normalization = surface
+set Resume computation = auto
+set Additional shared libraries = /path/to/libstress_regime_ratio.release.so
+
+
+subsection Formulation
+  set Formulation = Boussinesq approximation
+end
+
+
+subsection Geometry model
+  set Model name = box
+
+  subsection Box
+    set X repetitions = 10
+    set Y repetitions = 10
+    set Z repetitions = 4
+    set X extent = 400e3
+    set Y extent = 400e3
+    set Z extent = 160e3
+  end
+end
+
+
+subsection Mesh refinement
+  set Initial global refinement = 3
+  set Initial adaptive refinement = 2
+  set Time steps between mesh refinement = 0
+  set Strategy = minimum refinement function, isosurfaces, maximum refinement function
+
+  subsection Minimum refinement function
+    set Coordinate system = cartesian
+    set Variable names = x,y,z
+    set Function constants = l=400e3, w=400e3, h=160e3, \
+                             pi=3.1415926535, sob=15, sl=300e3, \
+                             fd=50e3, fw=100e3, fb=20e3
+    set Function expression = (z>=h-fd \
+                                ? (abs((x-(l/2+tan(sob*pi/180)*(y-w/2)))/sqrt(1+pow(tan(sob*pi/180), 2)))<=(fw/2)*(1-(h-z)/fd) \
+                                  ? 5 \
+                                  : (abs((x-(l/2+tan(sob*pi/180)*(y-w/2)))/sqrt(1+pow(tan(sob*pi/180), 2)))<=(fw/2)*(1-(h-z)/fd)+fb \
+                                    ? 4 \
+                                    : 3)) \
+                                : (z>=h-fd-fb && abs((x-(l/2+tan(sob*pi/180)*(y-w/2)))/sqrt(1+pow(tan(sob*pi/180), 2)))<=fb \
+                                  ? 4 \
+                                  : 3));
+    end
+
+  subsection Maximum refinement function
+    set Coordinate system = cartesian
+    set Variable names = x,y,z
+    set Function constants = l=400e3, w=400e3, h=160e3, \
+                             pi=3.1415926535, sob=15, sl=300e3, \
+                             fd=50e3, fw=100e3, fb=20e3
+    set Function expression = (z>=h-fd \
+                                ? (abs((x-(l/2+tan(sob*pi/180)*(y-w/2)))/sqrt(1+pow(tan(sob*pi/180), 2)))<=(fw/2)*(1-(h-z)/fd) \
+                                  ? 5 \
+                                  : (abs((x-(l/2+tan(sob*pi/180)*(y-w/2)))/sqrt(1+pow(tan(sob*pi/180), 2)))<=(fw/2)*(1-(h-z)/fd)+fb \
+                                    ? 4 \
+                                    : 3)) \
+                                : (z>=h-fd-fb && abs((x-(l/2+tan(sob*pi/180)*(y-w/2)))/sqrt(1+pow(tan(sob*pi/180), 2)))<=fb \
+                                  ? 4 \
+                                  : 3));
+    end
+
+  subsection Isosurfaces
+    set Isosurfaces = 5, 5, sediment: 0.5 | 1;
+  end
+end
+
+
+subsection Mesh deformation
+  set Mesh deformation boundary indicators = top: fastscape
+  set Additional tangential mesh velocity boundary indicators = left, right, front, back
+
+  subsection Fastscape
+    set Vertical exaggeration = -1
+    set Maximum timestep length = 2000
+    set Number of fastscape timesteps per aspect timestep = 50
+    set Average out of plane surface topography in 2d = false
+    set Maximum surface refinement level = 5
+    set Surface refinement difference = 2
+    set Additional fastscape refinement = 0
+    set Use marine component = true
+    set Use ghost nodes = true
+    set Uplift and advect with fastscape = true
+    set Sediment rain rates = 1e-7, 5e-7, 1e-6 # m/yr
+    set Sediment rain time intervals = 10e6, 20e6
+
+    subsection Boundary conditions
+      set Front = 1
+      set Right = 1
+      set Back = 1
+      set Left = 1
+    end
+
+    subsection Erosional parameters
+      set Bedrock river incision rate = 1e-6 #kf
+      set Sediment river incision rate = -1 #kfsed
+      set Drainage area exponent = 0.5 #m
+      set Slope exponent = 1 #n
+      set Bedrock diffusivity = 1e-4 #kd
+      set Sediment diffusivity = -1 #kdsed
+      set Bedrock deposition coefficient = 1 #g
+      set Multi-direction slope exponent = -1 #p
+    end
+
+    subsection Marine parameters
+      set Sea level = -4e3 #SL
+      set Silt porosity = 0 #p1
+      set Sand porosity = 0 #p2
+      set Silt e-folding depth = 0 #z1
+      set Sand e-folding depth = 0 #z2
+      set Sand-silt ratio = 1 #r
+      set Depth averaging thickness = 1e2 #L
+      set Silt transport coefficient = 200 #kds1
+      set Sand transport coefficient = 200 #kds2
+    end
+  end
+end
+
+
+subsection Discretization
+  subsection Stabilization parameters
+    set beta = 0.78 # for 3D models
+    set cR = 0.11
+  end
+end
+
+
+subsection Solver parameters
+  subsection Stokes solver parameters
+    set Stokes solver type = block AMG
+    set Linear solver tolerance = 1e-8
+    set Number of cheap Stokes solver steps = 2000
+    set GMRES solver restart length = 100
+    set Use full A block as preconditioner = true
+  end
+end
+
+
+subsection Boundary velocity model
+  set Prescribed velocity boundary indicators = left xz:function, right xz:function, front yz:function, back yz:function
+
+  subsection Function
+    set Variable names = x,y,z,t
+    set Function constants  = h=160e3, l=400e3, w=400e3, \
+                              uc=20e3, lc=15e3, ml=85e3, \
+                              pi=3.1415926535, fob=30, rob=30, \
+                              t1=25e6,
+                              v1_x=4e-3, v1_y=2e-3
+    set Function expression = (z>=h-(uc+lc+ml) \
+                                ? (t<t1 \
+                                  ? (x<l/2 \
+                                    ? -v1_x \
+                                    : v1_x) \
+                                  : 0) \ 
+                                : (t<t1 \
+                                  ? (x<l/2 \
+                                    ? -v1_x*z/(h-(uc+lc+ml)) \
+                                    : v1_x*z/(h-(uc+lc+ml))) \
+                                  : 0)); \
+                              (z>=h-(uc+lc+ml) \
+                                ? (t<t1 \
+                                  ? (y<w/2 \
+                                    ? v1_y \
+                                    : -v1_y) \
+                                  : 0) \
+                                : (t<t1 \
+                                  ? (y<w/2 \
+                                    ? v1_y*z/(h-(uc+lc+ml)) \
+                                    : -v1_y*z/(h-(uc+lc+ml))) \
+                                  : 0)); \
+                              0;
+  end
+end
+
+
+subsection Boundary traction model
+  set Prescribed traction boundary indicators = bottom z: initial lithostatic pressure
+
+    subsection Initial lithostatic pressure
+      set Representative point = 50e3, 150e3, 160e3
+      set Number of integration points = 1000
+  end
+end
+
+
+subsection Compositional fields
+  set Number of fields = 9
+  set Names of fields = plastic_strain, \
+                        viscous_strain, \
+                        sediment, \
+                        deposition_depth, \
+                        sediment_age, \
+                        upper_crust, \
+                        lower_crust, \
+                        mantle_lithosphere, \
+                        asthenosphere
+  set Types of fields = strain, \
+                        strain, \
+                        chemical composition, \
+                        generic, \
+                        generic, \
+                        chemical composition, \
+                        chemical composition, \
+                        chemical composition, \
+                        chemical composition
+end
+
+
+subsection Initial composition model
+  set List of model names = function
+
+  subsection Function
+    set Variable names = x,y,z,t
+    set Function constants = h=160e3, l=400e3, w=400e3, \
+                             sd=0.1e3, uc=20e3, lc=15e3, ml=85e3, \
+                             pi=3.1415926535, sob=15, sl=300e3, sw=30e3, \
+                             slv=4e3
+    set Function expression = (z>=h-(uc+lc) \
+                                ? (y>=w/2+tan(sob*pi/180)*(l/2-x)-(sl/2)/cos(sob*pi/180) \
+                                  && y<=w/2+tan(sob*pi/180)*(l/2-x)+(sl/2)/cos(sob*pi/180) \
+                                  && x>=l/2+tan(sob*pi/180)*(y-w/2)-(sw/2)/cos(sob*pi/180) \
+                                  && x<=l/2+tan(sob*pi/180)*(y-w/2)+(sw/2)/cos(sob*pi/180) \
+                                    ? exp(-0.5*pow((x-(l/2+tan(sob*pi/180)*(y-w/2)))/((sw/2)*sqrt(1+pow(tan(sob*pi/180), 2))), 2))*0.5+rand_seed(1)*0.5 \
+                                    : 0) \
+                                : 0); \
+                              0; \
+                              (z>=h-sd ? 1 : 0); \
+                              (z>h-uc ? h-slv-z : 0); \
+                              0; \
+                              (z<h-sd && z>=h-uc ? 1 : 0); \
+                              (z<h-uc && z>=h-(uc+lc) ? 1 : 0); \
+                              (z<h-(uc+lc) && z>=h-(uc+lc+ml) ? 1 : 0); \
+                              (z<h-(uc+lc+ml) ? 1 : 0);
+  end
+end
+
+
+subsection Boundary composition model
+  set Fixed composition boundary indicators = front, back, top, bottom
+  set Allow fixed composition on outflow boundaries = false
+  set List of model names = function
+
+  subsection Function
+    set Variable names = x,y,z,t
+    set Function constants = h=160e3, l=400e3, w=400e3, \
+                             sd=0.1e3, uc=20e3, lc=15e3, ml=85e3, \
+                             slv=0, mn=1
+    set Function expression = 0; \
+                              0; \
+                              (y>=mn && y<=w-mn \
+                                ? (z>=h-uc ? 1 : 0) \
+                                : (z>=h-sd ? 1 : 0)); \
+                              (z>h-uc ? h-slv-z : 0); \
+                              (t>0 ? t/1e6 : 0); \
+                              (y>=mn && y<=w-mn \
+                                ? 0 \
+                                : (z<h-sd && z>=h-uc ? 1 : 0)); \
+                              (z<h-uc && z>=h-(uc+lc) ? 1 : 0); \
+                              (z<h-(uc+lc) && z>=h-(uc+lc+ml) ? 1 : 0); \
+                              (z<h-(uc+lc+ml) ? 1 : 0);
+  end
+end
+
+
+subsection Boundary temperature model
+  set Fixed temperature boundary indicators = bottom, top
+  set List of model names = initial temperature
+end
+
+
+subsection Initial temperature model
+  set List of model names = function
+
+  subsection Function
+    set Variable names = x,y,z
+    set Function constants = h=160e3, l=400e3, w=400e3, \
+                             uc=20e3, lc=15e3, ml=85e3, \
+                             pi=3.1415926535, sob=15, sw=30e3, \
+                             ts1=273, ts2=633, ts3=849, ts4=1573.25, \
+                             tc1=273, tc2=593, tc3=809, tc4=1573.25, \
+                             A1=1.5e-6, A2=4e-7, A3=2e-8, \
+                             k1=2.5, k2=2.5, k3=3, k4=100, \
+                             qs1=0.06, qs2=0.039, qs3=0.0264117646, qs4=0, \
+                             qc1=0.055, qc2=0.039, qc3=0.0278235295, qc4=0
+    set Function expression = (exp(-0.5*pow((x-(l/2+tan(sob*pi/180)*(y-w/2)))/((sw/2)*sqrt(1+pow(tan(sob*pi/180), 2))), 2)) * \
+                                (z>=h-uc \
+                                  ? (ts1+qs1/k1*(h-z)-A1*(h-z)*(h-z)/(2*k1)) \
+                                  : (z>=h-(uc+lc) \
+                                    ? (ts2+qs2/k2*(h-z-uc)-A2*(h-z-uc)*(h-z-uc)/(2*k2)) \
+                                    : (z>=h-(uc+lc+ml) \
+                                      ? (ts3+qs3/k3*(h-z-(uc+lc))-A3*(h-z-(uc+lc))*(h-z-(uc+lc))/(2*k3)) \
+                                      : (ts4+qs4/k4*(h-z-(uc+lc+ml))))) ) \
+                              + (1-exp(-0.5*pow((x-(l/2+tan(sob*pi/180)*(y-w/2)))/((sw/2)*sqrt(1+pow(tan(sob*pi/180), 2))), 2))) * \
+                                  (z>=h-uc \
+                                    ? (tc1+qc1/k1*(h-z)-A1*(h-z)*(h-z)/(2*k1)) \
+                                    : (z>=h-(uc+lc) \
+                                      ? (tc2+qc2/k2*(h-z-uc)-A2*(h-z-uc)*(h-z-uc)/(2*k2)) \
+                                      : (z>=h-(uc+lc+ml) \
+                                        ? (tc3+qc3/k3*(h-z-(uc+lc))-A3*(h-z-(uc+lc))*(h-z-(uc+lc))/(2*k3)) \
+                                        : (tc4+qc4/k4*(h-z-(uc+lc+ml)))))));
+  end
+end
+
+
+subsection Heating model
+  set List of model names = compositional heating
+
+  subsection Compositional heating
+    set Use compositional field for heat production averaging = 0, 0, 0, 1, 1, 1, 1, 1, 1, 1
+
+    # from Freymark et al. 2020, doi:10.1016/j.tecto.2016.11.013
+    set Compositional heating values = 0, 0, 0, 1e-6, 1e-6, 1e-6, 1.5e-6, 4e-7, 2e-8, 0
+  end
+end
+
+
+subsection Material model
+  set Model name = visco plastic
+  set Material averaging = none
+
+  subsection Visco Plastic
+    set Reference temperature = 273
+
+    set Minimum strain rate = 1e-20
+    set Reference strain rate = 1e-15
+
+    set Minimum viscosity = 1e19
+    set Maximum viscosity = 1e25
+
+    set Define thermal conductivities = true
+    # from Freymark et al. 2020, doi:10.1016/j.tecto.2016.11.013
+    set Thermal conductivities = 3, 3, 3, 1.2, 1.2, 1.2, 2.5, 2.5, 3, 3
+    set Heat capacities = 1.2e3
+
+    # from Freymark et al. 2020, doi:10.1016/j.tecto.2016.11.013
+    set Densities = background: 3300, \
+                    sediment: 2300, \
+                    upper_crust: 2700, \
+                    lower_crust: 2900, \
+                    mantle_lithosphere: 3250, \
+                    asthenosphere: 3300
+    set Thermal expansivities = 3e-5, 3e-5, 3e-5, 3.7e-5, 3.7e-5, 3.7e-5, 2.7e-5, 2.7e-5, 3e-5, 3e-5
+
+    set Viscosity averaging scheme = harmonic
+    set Viscous flow law = composite
+
+    set Prefactors for dislocation creep = background: 2.12e-15, \
+                                           sediment: 8.57e-28, \
+                                           upper_crust: 8.57e-28, \
+                                           lower_crust: 7.13e-18, \
+                                           mantle_lithosphere: 6.52e-16, \
+                                           asthenosphere: 2.12e-15
+    set Stress exponents for dislocation creep = background: 3.5, \
+                                                 sediment: 4, \
+                                                 upper_crust: 4, \
+                                                 lower_crust: 3, \
+                                                 mantle_lithosphere: 3.5, \
+                                                 asthenosphere: 3.5
+    set Activation energies for dislocation creep = background: 480e3, \
+                                                    sediment: 223e3, \
+                                                    upper_crust: 223e3, \
+                                                    lower_crust: 345e3, \
+                                                    mantle_lithosphere: 530e3, \
+                                                    asthenosphere: 480e3
+    set Activation volumes for dislocation creep = background: 11e-6, \
+                                                   sediment: 0, \
+                                                   upper_crust: 0, \
+                                                   lower_crust: 0, \
+                                                   mantle_lithosphere: 18e-6, \
+                                                   asthenosphere: 11e-6
+
+    set Prefactors for diffusion creep = background: 1.5e-9, \
+                                         sediment: 5.97e-19, \
+                                         upper_crust: 5.97e-19, \
+                                         lower_crust: 2.99e-25, \
+                                         mantle_lithosphere: 2.25e-9, \
+                                         asthenosphere: 1.5e-9
+    set Activation energies for diffusion creep = background: 335e3, \
+                                                  sediment: 223e3, \
+                                                  upper_crust: 223e3, \
+                                                  lower_crust: 159e3, \
+                                                  mantle_lithosphere: 375e3, \
+                                                  asthenosphere: 335e3
+    set Activation volumes for diffusion creep = background: 4e-6, \
+                                                 sediment: 0, \
+                                                 upper_crust: 0, \
+                                                 lower_crust: 38e-6, \
+                                                 mantle_lithosphere: 6e-6, \
+                                                 asthenosphere: 4e-6
+    set Grain size = 1e-3
+    set Grain size exponents for diffusion creep = background: 0, \
+                                                   sediment: 2, \
+                                                   upper_crust: 2, \
+                                                   lower_crust: 3, \
+                                                   mantle_lithosphere: 0, \
+                                                   asthenosphere: 0
+  
+    set Angles of internal friction = 26.56
+    set Cohesions = 5e6
+
+    set Strain weakening mechanism = plastic weakening with plastic strain and viscous weakening with viscous strain
+
+    set Start plasticity strain weakening intervals = 0
+    set End plasticity strain weakening intervals = 1, 1, 1, 0.1, 0.1, 0.1, 1, 1, 1, 1
+    set Cohesion strain weakening factors = 1
+    set Friction strain weakening factors = 1, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 1
+
+    set Start prefactor strain weakening intervals = 0
+    set End prefactor strain weakening intervals = 1, 1, 1, 0.1, 0.1, 0.1, 1, 1, 1, 1
+    set Prefactor strain weakening factors = 1, 1, 1, 0.25, 0.25, 0.25, 0.25, 0.25, 1, 1
+  end
+end
+
+
+subsection Gravity model
+  set Model name = vertical
+
+  subsection Vertical
+    set Magnitude = 9.81
+  end
+end
+
+
+subsection Checkpointing
+  set Steps between checkpoint = 5
+  set Time between checkpoint = 0
+end
+
+
+subsection Postprocess
+  set List of postprocessors = basic statistics, \
+                               composition statistics, \
+                               heat flux statistics, \
+                               mass flux statistics, \
+                               matrix statistics, \
+                               pressure statistics, \
+                               temperature statistics, \
+                               topography, \
+                               velocity statistics, \
+                               visualization
+
+  subsection Visualization
+    set Output base variables on mesh surface = true
+    set Output format = vtu
+    set Time between graphical output = 1e6
+    set Point-wise stress and strain = true
+    set Write higher order output = false
+    set Number of grouped files = 1
+    set List of output variables = material properties, \
+                                   heat flux map, \
+                                   strain rate, \
+                                   surface strain rate tensor, \
+                                   principal stress, \
+                                   stress second invariant, \
+                                   maximum horizontal compressive stress, \
+                                   stress regime and ratio, \
+                                   named additional outputs
+
+    subsection Material properties
+      set List of material properties = density, viscosity
+    end
+  end
+end
