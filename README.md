@@ -20,9 +20,9 @@ The ASPECT input file (including Fastscape parameters), as well as its output lo
 
 The coupling interface between ASPECT and Fastscape has been implemented in the main branch of ASPECT. In order to install ASPECT with FastScape,
 
-1. Create a build directory for FastScape and compile it with an added flag for creating a shared library. `cmake -DBUILD_FASTSCAPELIB_SHARED=ON /path/to/fastscape/build` then `make` to compile.
+1. Create a build directory for FastScape and compile it with an added flag for creating a shared library: `cmake -DBUILD_FASTSCAPELIB_SHARED=ON /path/to/fastscape/build` then `make` to compile.
 
-2. Compile ASPECT with a flag pointing to the fastscape build folder with the shared library. `cmake -DFASTSCAPE_DIR=/path/to/fastscape/build /path/to/aspect/build` then `make`
+2. Create a build directory for ASPECT and compile it with an added flag pointing to the fastscape build folder as a shared library: `cmake -DFASTSCAPE_DIR=/path/to/fastscape/build /path/to/aspect/build` then `make`.
 
 
 ## Programable Filters
