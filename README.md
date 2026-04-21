@@ -7,8 +7,8 @@ This repository contains ASPECT input files, programmable filters for crustal st
 
 - [ParaView](https://www.paraview.org/) 6.0
 - [Python](https://www.python.org/) 3.12
-- [ASPECT](https://aspect.geodynamics.org/) 3.1.0-pre
-- [Fastscape](https://fastscape.org/fastscapelib-fortran/) (Fortran)
+- [ASPECT](https://aspect.geodynamics.org/) 3.1.0-pre ([commit 984f6ff](https://github.com/geodynamics/aspect/commit/984f6ff64efb91c792525caca3b2864c9fad4d50))
+- [Fastscape](https://fastscape.org/fastscapelib-fortran/) in Fortran ([commit 45f9036](https://github.com/fastscape-lem/fastscapelib-fortran/commit/45f9036b9e8a4bcb14b9ddd0a1c5cbfaec8eb4fc))
 
 
 ## Reference Model Input Files
