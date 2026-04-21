@@ -77,6 +77,7 @@ subsection Mesh refinement
                                   : 3));
     end
 
+  # have an option to refine based on the sediment field in ASPECT
   subsection Isosurfaces
     set Isosurfaces = 5, 5, sediment: 0.5 | 1;
   end
@@ -163,6 +164,7 @@ subsection Boundary velocity model
                               pi=3.1415926535, fob=30, rob=30, \
                               t1=25e6,
                               v1_x=4e-3, v1_y=2e-3
+    # a linear velocity drop from the base of the lithosphere to the bottom model surface
     set Function expression = (z>=h-(uc+lc+ml) \
                                 ? (t<t1 \
                                   ? (x<l/2 \
@@ -299,6 +301,7 @@ subsection Initial temperature model
                              k1=2.5, k2=2.5, k3=3, k4=100, \
                              qs1=0.06, qs2=0.039, qs3=0.0264117646, qs4=0, \
                              qc1=0.055, qc2=0.039, qc3=0.0278235295, qc4=0
+    # a Gaussian perturbation (qs) along the long axis of the seed, tapered to (qc) in the background
     set Function expression = (exp(-0.5*pow((x-(l/2+tan(sob*pi/180)*(y-w/2)))/((sw/2)*sqrt(1+pow(tan(sob*pi/180), 2))), 2)) * \
                                 (z>=h-uc \
                                   ? (ts1+qs1/k1*(h-z)-A1*(h-z)*(h-z)/(2*k1)) \
