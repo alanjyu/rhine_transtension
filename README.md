@@ -13,7 +13,7 @@ This repository contains ASPECT input files, programmable filters for crustal st
 
 ## Reference Model Input Files
 
-The ASPECT input file (including Fastscape parameters), output log, and statistics, are stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref). The output movie is included as a Supplimentary Movie 1 in the manuscript.
+The ASPECT input file (including Fastscape parameters), output log, and statistics, are stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref). The initial continental geotherm and yield strength envelopes are stored in [ref/init/](https://github.com/alanjyu/rhine_transtension/tree/main/ref/init/). The output movie is included as a Supplementary Movie 1 in the manuscript.
 
 
 ## Coupling of ASPECT and Fastscape
@@ -25,9 +25,9 @@ The coupling interface between ASPECT and Fastscape has been implemented in the 
 2. Create a build directory for ASPECT and compile it with an added flag pointing to the fastscape build folder as a shared library: `cmake -DFASTSCAPE_DIR=/path/to/fastscape/build/dir /path/to/aspect/build/dir` then `make`.
 
 
-## Programable Filters
+## Programmable Filters
 
-The ParaView Programable Filters for calculating the crustal strengthing factor ($\beta$) are stored in [filters/](https://github.com/alanjyu/rhine_transtension/tree/main/filters). To use the filters:
+The ParaView Programmable Filters for calculating the crustal strengthening factor ($\beta$) are stored in [filters/](https://github.com/alanjyu/rhine_transtension/tree/main/filters). To use the filters:
 
 1. [Script 1](https://github.com/alanjyu/rhine_transtension/tree/main/filters) is used to extract the topography of the upper surface of a selected layer. Edit [Script 1](https://github.com/alanjyu/rhine_transtension/blob/main/filters/1-get_topo_top_z.py) so that the input variable name matches your desired field.
 
