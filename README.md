@@ -16,6 +16,15 @@ This repository contains ASPECT input files, programmable filters for crustal st
 The ASPECT input file (including Fastscape parameters), as well as its output log, is stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref).
 
 
+## Coupling of ASPECT and Fastscape
+
+The coupling interface between ASPECT and Fastscape has been implemented in the main branch of ASPECT. In order to install ASPECT with FastScape,
+
+1. Create a build directory for FastScape and compile it with an added flag for creating a shared library. `cmake -DBUILD_FASTSCAPELIB_SHARED=ON /path/to/fastscape/build` then `make` to compile.
+
+2. Compile ASPECT with a flag pointing to the fastscape build folder with the shared library. `cmake -DFASTSCAPE_DIR=/path/to/fastscape/build /path/to/aspect/build` then `make`
+
+
 ## Programable Filters
 
 The ParaView Programable Filters for calculating the crustal strengthing factor ($\beta$) are stored in [filters/](https://github.com/alanjyu/rhine_transtension/tree/main/filters). To use the filters:
