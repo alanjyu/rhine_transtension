@@ -13,12 +13,12 @@ This repository contains ASPECT input files, programmable filters for crustal st
 
 ## Reference Model Input Files
 
-The ASPECT input file (including Fastscape parameters), as well as its output log, is stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref).
+The ASPECT input file (including Fastscape parameters), output log, and statistics, are stored in [ref/](https://github.com/alanjyu/rhine_transtension/tree/main/ref). The output movie is included as a Supplimentary Movie 1 in the manuscript.
 
 
 ## Coupling of ASPECT and Fastscape
 
-The coupling interface between ASPECT and Fastscape has been implemented in the main branch of ASPECT. In order to install ASPECT with FastScape,
+The coupling interface between ASPECT and Fastscape has been implemented in the main branch of ASPECT. In order to install ASPECT with FastScape:
 
 1. Create a build directory for FastScape and compile it with an added flag for creating a shared library: `cmake -DBUILD_FASTSCAPELIB_SHARED=ON /path/to/fastscape/build` then `make` to compile.
 
