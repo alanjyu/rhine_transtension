@@ -162,8 +162,7 @@ subsection Boundary velocity model
     set Function constants  = h=160e3, l=400e3, w=400e3, \
                               uc=20e3, lc=15e3, ml=85e3, \
                               pi=3.1415926535, fob=30, rob=30, \
-                              t1=25e6,
-                              v1_x=4e-3, v1_y=2e-3
+                              t1=25e6, v1_x=4e-3, v1_y=2e-3
     # a linear velocity drop from the base of the lithosphere to the bottom model surface
     set Function expression = (z>=h-(uc+lc+ml) \
                                 ? (t<t1 \
