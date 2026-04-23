@@ -35,7 +35,7 @@ The ParaView Programmable Filters for calculating the crustal strengthening fact
 
 3. Perform the same procedure for the second layer.
 
-4. Once the desired surfaces have been extracted, In ParaView, select the two outputs and add another Programmable Filter. The first input corresponds to `self.GetInputDataObject(0, 0)`, and the second to `self.GetInputDataObject(1, 0)`. Paste [Script 2](https://github.com/alanjyu/rhine_transtension/blob/main/filters/2-get_crustal_thickness.py) into the Script field and click `Apply`. The script will output the thickness between the two extracted surfaces.
+4. Once the desired surfaces have been extracted, in ParaView select the two outputs and add another Programmable Filter. The first input corresponds to `self.GetInputDataObject(0, 0)`, and the second to `self.GetInputDataObject(1, 0)`. Paste [Script 2](https://github.com/alanjyu/rhine_transtension/blob/main/filters/2-get_crustal_thickness.py) into the Script field and click `Apply`. The script will output the thickness between the two extracted surfaces.
 
 4. Compute the $\beta$-factor by dividing the calculated layer thickness by its original thickness using `Filters → Calculator`.
 
