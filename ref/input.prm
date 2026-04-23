@@ -263,7 +263,7 @@ subsection Boundary composition model
     set Variable names = x,y,z,t
     set Function constants = h=160e3, l=400e3, w=400e3, \
                              sd=0.1e3, uc=20e3, lc=15e3, ml=85e3, \
-                             slv=0, mn=1
+                             slv=4e3, mn=1
     set Function expression = 0; \
                               0; \
                               (y>=mn && y<=w-mn \
@@ -327,8 +327,6 @@ subsection Heating model
 
   subsection Compositional heating
     set Use compositional field for heat production averaging = 0, 0, 0, 1, 1, 1, 1, 1, 1, 1
-
-    # from Freymark et al. 2020, doi:10.1016/j.tecto.2016.11.013
     set Compositional heating values = 0, 0, 0, 1e-6, 1e-6, 1e-6, 1.5e-6, 4e-7, 2e-8, 0
   end
 end
@@ -348,11 +346,8 @@ subsection Material model
     set Maximum viscosity = 1e25
 
     set Define thermal conductivities = true
-    # from Freymark et al. 2020, doi:10.1016/j.tecto.2016.11.013
     set Thermal conductivities = 3, 3, 3, 1.2, 1.2, 1.2, 2.5, 2.5, 3, 3
     set Heat capacities = 1.2e3
-
-    # from Freymark et al. 2020, doi:10.1016/j.tecto.2016.11.013
     set Densities = background: 3300, \
                     sediment: 2300, \
                     upper_crust: 2700, \
