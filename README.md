@@ -25,9 +25,9 @@ The coupling interface between ASPECT and Fastscape has been implemented in the 
 2. Create a build directory for ASPECT and compile it with an added flag pointing to the fastscape build folder as a shared library: `cmake -DFASTSCAPE_DIR=/path/to/fastscape/build/dir /path/to/aspect/build/dir` then `make`.
 
 
-## Programmable Filters
+## Stretching Factor
 
-The ParaView Programmable Filters for calculating the crustal strengthening factor ($\beta$) are stored in [filters/](https://github.com/alanjyu/rhine_transtension/tree/main/filters). To use the filters:
+The ParaView Programmable Filters for calculating the crustal stretching factor ($\beta$) are stored in [filters/](https://github.com/alanjyu/rhine_transtension/tree/main/filters). To use the filters:
 
 1. [Script 1](https://github.com/alanjyu/rhine_transtension/tree/main/filters) is used to extract the topography of the upper surface of a selected layer. Edit [Script 1](https://github.com/alanjyu/rhine_transtension/blob/main/filters/1-get_topo_top_z.py) so that the input variable name matches your desired field.
 
@@ -40,7 +40,7 @@ The ParaView Programmable Filters for calculating the crustal strengthening fact
 4. Compute the $\beta$-factor by dividing the calculated layer thickness by its original thickness using `Filters → Calculator`.
 
 
-## Shared Libraries
+## Regime Stress Ratio
 
 The source code for stress regime analysis is available in [lib/](https://github.com/alanjyu/rhine_transtension/tree/main/lib). This outputs the fault category and stress regime ratio for each cell.
 
