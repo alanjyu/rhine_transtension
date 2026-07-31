@@ -1,4 +1,4 @@
-# Dataset for "Sustained transtension shapes narrow, alternating basins and kinematic transition in the Upper Rhine Graben"
+# Dataset for "Sustained transtension drives kinematic transitions and alternating half-graben polarity in narrow rifts"
 
 This repository contains ASPECT input files, programmable filters for crustal stretching factors, and ASPECT shared libraries for stress regime analysis.
 
